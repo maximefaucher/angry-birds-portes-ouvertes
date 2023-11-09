@@ -3,12 +3,12 @@ import sys
 import math
 import time
 import pygame
-CURRENT_PATH = os.getcwd()
 import pymunk as pm
 from characters import Bird
 from level import Level
 from pymunk import Vec2d
 
+CURRENT_PATH = os.getcwd()
 
 REDBIRD_IMG = CURRENT_PATH + "/resources/images/red-bird3.png"
 PIG_IMG = CURRENT_PATH + "/resources/images/pig_failed.png"
@@ -21,9 +21,9 @@ ENEMY_SPRITE_IMG = CURRENT_PATH + "/resources/images/s.png"
 SLING_IMG = CURRENT_PATH + "/resources/images/sling-3.png"
 SL_IMG = CURRENT_PATH + "/resources/images/sl.png"
 
-toggle_draw_options = True
+toggle_draw_options = False
 
-GRAVITE_TERRE = -981
+GRAVITE_TERRE = -700
 GRAVITE_LUNE = GRAVITE_TERRE / 6
 GRAVITE_JUPITER = GRAVITE_TERRE * 11
 
