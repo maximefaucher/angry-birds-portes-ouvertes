@@ -15,7 +15,7 @@ class Bird():
         body.position = x, y
 
         # L = K * X
-        power = distance * CONSTANTE_RAPPEL
+        power = CONSTANTE_RAPPEL * distance
         
         
         impulse = power * Vec2d(1, 0)
@@ -41,7 +41,7 @@ class Pig():
         body = pm.Body(mass, inertia)
         body.position = x, y
         shape = pm.Circle(body, radius, (0, 0))
-        shape.elasticity = 0.95
+        shape.elasticity = ELASTICITE
         shape.friction = 1
         shape.collision_type = 1
         space.add(body, shape)

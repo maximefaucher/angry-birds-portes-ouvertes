@@ -2,7 +2,8 @@ import pymunk as pm
 from pymunk import Vec2d
 import pygame
 import math
-
+import os
+CURRENT_PATH = os.getcwd()
 
 class Polygon():
     def __init__(self, pos, length, height, space, mass=5.0):
@@ -16,8 +17,8 @@ class Polygon():
         space.add(body, shape)
         self.body = body
         self.shape = shape
-        wood = pygame.image.load("resources/images/wood.png").convert_alpha()
-        wood2 = pygame.image.load("resources/images/wood2.png").convert_alpha()
+        wood = pygame.image.load(CURRENT_PATH + "/resources/images/wood.png").convert_alpha()
+        wood2 = pygame.image.load(CURRENT_PATH + "/resources/images/wood2.png").convert_alpha()
         rect = pygame.Rect(251, 357, 86, 22)
         self.beam_image = wood.subsurface(rect).copy()
         rect = pygame.Rect(16, 252, 22, 84)

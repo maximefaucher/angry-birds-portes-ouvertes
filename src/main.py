@@ -3,56 +3,43 @@ import sys
 import math
 import time
 import pygame
-current_path = os.getcwd()
+CURRENT_PATH = os.getcwd()
 import pymunk as pm
 from characters import Bird
 from level import Level
 from pymunk import Vec2d
 
 
-REDBIRD_IMG = "resources/images/red-bird3.png"
+REDBIRD_IMG = CURRENT_PATH + "/resources/images/red-bird3.png"
+PIG_IMG = CURRENT_PATH + "/resources/images/pig_failed.png"
+BACKGROUND_IMG = CURRENT_PATH + "/resources/images/background3.png"
+CIRCLE_IMG = CURRENT_PATH + "/resources/images/circle.png"
+ENEMY_IMG = CURRENT_PATH + "/resources/images/p.png"
+BLANK_IMG = CURRENT_PATH + "/resources/images/b1.png"
+SPRITE_IMG = CURRENT_PATH + "/resources/images/full-sprite.png"
+ENEMY_SPRITE_IMG = CURRENT_PATH + "/resources/images/s.png"
+SLING_IMG = CURRENT_PATH + "/resources/images/sling-3.png"
+SL_IMG = CURRENT_PATH + "/resources/images/sl.png"
 
-PIG_IMG = "resources/images/pig_failed.png"
+toggle_draw_options = True
 
-BACKGROUND_IMG = "resources/images/background3.png"
-
-CIRCLE_IMG = "resources/images/circle.png"
-
-ENEMY_IMG = "resources/images/p.png"
-
-BLANK_IMG = "resources/images/b1.png"
-
-SPRITE_IMG = "resources/images/full-sprite.png"
-
-ENEMY_SPRITE_IMG = "resources/images/s.png"
-
-SLING_IMG = "resources/images/sling-3.png"
-
-SL_IMG = "resources/images/sl.png"
-
-
-toggle_draw_options = False
+GRAVITE_TERRE = -981
+GRAVITE_LUNE = GRAVITE_TERRE / 6
+GRAVITE_JUPITER = GRAVITE_TERRE * 11
 
 
 pygame.init()
 screen = pygame.display.set_mode((1200, 650))
-redbird = pygame.image.load(
-    REDBIRD_IMG).convert_alpha()
-background2 = pygame.image.load(
-    BACKGROUND_IMG).convert_alpha()
-sling_image = pygame.image.load(
-    SLING_IMG).convert_alpha()
-full_sprite = pygame.image.load(
-    SPRITE_IMG).convert_alpha()
+redbird = pygame.image.load(REDBIRD_IMG).convert_alpha()
+background2 = pygame.image.load(BACKGROUND_IMG).convert_alpha()
+sling_image = pygame.image.load(SLING_IMG).convert_alpha()
+full_sprite = pygame.image.load(SPRITE_IMG).convert_alpha()
 rect = pygame.Rect(181, 1050, 50, 50)
 cropped = full_sprite.subsurface(rect).copy()
 pig_image = pygame.transform.scale(cropped, (30, 30))
-buttons = pygame.image.load(
-    "resources/images/selected-buttons.png").convert_alpha()
-pig_happy = pygame.image.load(
-    PIG_IMG).convert_alpha()
-stars = pygame.image.load(
-    "resources/images/stars-edited.png").convert_alpha()
+buttons = pygame.image.load(CURRENT_PATH + "/resources/images/selected-buttons.png").convert_alpha()
+pig_happy = pygame.image.load(PIG_IMG).convert_alpha()
+stars = pygame.image.load(CURRENT_PATH + "/resources/images/stars-edited.png").convert_alpha()
 rect = pygame.Rect(0, 0, 200, 200)
 star1 = stars.subsurface(rect).copy()
 rect = pygame.Rect(204, 0, 200, 200)
@@ -72,7 +59,7 @@ clock = pygame.time.Clock()
 running = True
 # the base of the physics
 space = pm.Space()
-space.gravity = (0.0, -700.0)
+space.gravity = (0.0, GRAVITE_TERRE)
 pigs = []
 birds = []
 balls = []
@@ -159,7 +146,7 @@ def distance(xo, yo, x, y):
 
 def load_music():
     """Load the music"""
-    song1 = 'resources/sounds/angry-birds.ogg'
+    song1 = CURRENT_PATH + '/resources/sounds/angry-birds.ogg'
     pygame.mixer.music.load(song1)
     pygame.mixer.music.play(-1)
 
@@ -214,8 +201,11 @@ def sling_action():
         # calcule de l'angle en degrés
         m_angle = math.degrees(-angle)
         
+        # affiche l'acc. gravit.
+        screen.blit(bold_font.render("Acc. gravit. : " + str(round(space.gravity[1]/100, 2)), 1, (0, 0, 0)), (700, 10))
+        
         # affiche l'angle
-        screen.blit(bold_font.render("angle: " + str(round(m_angle, 2)), 1, (0, 0, 0)), (10, 10))
+        screen.blit(bold_font.render("Angle : " + str(round(m_angle, 2)), 1, (0, 0, 0)), (10, 10))
         
         # affiche la puissance
         dist = 0
@@ -226,7 +216,7 @@ def sling_action():
 
         imp = dist*53 * Vec2d(1,0)
         
-        screen.blit(bold_font.render("Énergie: " + str(round(imp.rotated(-angle).length, 2)), 1, (0, 0, 0)), (300, 10))
+        screen.blit(bold_font.render("Énergie : " + str(round(imp.rotated(-angle).length, 2)), 1, (0, 0, 0)), (300, 10))
 
         # X à l'origine du référentiel
         pygame.draw.line(screen, (255, 0, 0), (10, sling_y), (sling_x+1000, sling_y), 2)
@@ -401,23 +391,23 @@ space.add_collision_handler(0, 1).post_solve=post_solve_bird_pig
 space.add_collision_handler(0, 2).post_solve=post_solve_bird_wood
 # pig and wood
 space.add_collision_handler(1, 2).post_solve=post_solve_pig_wood
-load_music()
+# load_music() # pitié!
 level = Level(pigs, columns, beams, space)
 level.number = 0
 level.load_level()
 
 def debug_toggle_col_and_beams():
     for c in columns:
-        c.wood = pygame.image.load("resources/images/w.png").convert_alpha()
-        c.wood2 = pygame.image.load("resources/images/w.png").convert_alpha()
+        c.wood = pygame.image.load(CURRENT_PATH + "/resources/images/w.png").convert_alpha()
+        c.wood2 = pygame.image.load(CURRENT_PATH + "/resources/images/w.png").convert_alpha()
         rect = pygame.Rect(251, 357, 86, 22)
         c.beam_image = c.wood.subsurface(rect).copy()
         rect = pygame.Rect(16, 252, 22, 84)
         c.column_image = c.wood2.subsurface(rect).copy()
                 
     for c in beams:
-        c.wood = pygame.image.load("resources/images/w.png").convert_alpha()
-        c.wood2 = pygame.image.load("resources/images/w.png").convert_alpha()
+        c.wood = pygame.image.load(CURRENT_PATH + "/resources/images/w.png").convert_alpha()
+        c.wood2 = pygame.image.load(CURRENT_PATH + "/resources/images/w.png").convert_alpha()
         rect = pygame.Rect(251, 357, 86, 22)
         c.beam_image = c.wood.subsurface(rect).copy()
         rect = pygame.Rect(16, 252, 22, 84)
@@ -426,16 +416,16 @@ def debug_toggle_col_and_beams():
 
 def toggle_normal_col_and_beams():
     for c in columns:
-        c.wood = pygame.image.load("resources/images/wood.png").convert_alpha()
-        c.wood2 = pygame.image.load("resources/images/wood2.png").convert_alpha()
+        c.wood = pygame.image.load(CURRENT_PATH + "/resources/images/wood.png").convert_alpha()
+        c.wood2 = pygame.image.load(CURRENT_PATH + "/resources/images/wood2.png").convert_alpha()
         rect = pygame.Rect(251, 357, 86, 22)
         c.beam_image = c.wood.subsurface(rect).copy()
         rect = pygame.Rect(16, 252, 22, 84)
         c.column_image = c.wood2.subsurface(rect).copy()
                 
     for c in beams:
-        c.wood = pygame.image.load("resources/images/wood.png").convert_alpha()
-        c.wood2 = pygame.image.load("resources/images/wood2.png").convert_alpha()
+        c.wood = pygame.image.load(CURRENT_PATH + "/resources/images/wood.png").convert_alpha()
+        c.wood2 = pygame.image.load(CURRENT_PATH + "/resources/images/wood2.png").convert_alpha()
         rect = pygame.Rect(251, 357, 86, 22)
         c.beam_image = c.wood.subsurface(rect).copy()
         rect = pygame.Rect(16, 252, 22, 84)
@@ -485,10 +475,13 @@ while running:
                 wall = True
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-            space.gravity = (0.0, -10.0)
+            space.gravity = (0.0, GRAVITE_LUNE)
             level.bool_space = True
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_n:
-            space.gravity = (0.0, -700.0)
+            space.gravity = (0.0, GRAVITE_TERRE)
+            level.bool_space = False
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_j:
+            space.gravity = (0.0, GRAVITE_JUPITER)
             level.bool_space = False
         if (pygame.mouse.get_pressed()[0] and x_mouse > 100 and
                 x_mouse < 250 and y_mouse > 370 and y_mouse < 550):
@@ -675,4 +668,4 @@ while running:
     draw_level_failed()
     pygame.display.flip()
     clock.tick(50)
-    pygame.display.set_caption("fps: " + str(clock.get_fps()))
+    pygame.display.set_caption("Sciences, Info, Maths")
